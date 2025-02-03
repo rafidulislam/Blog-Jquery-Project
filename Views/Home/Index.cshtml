@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+                val1 = 20;
+                val2 = 10;
+                $("#a").text("val1: " + val1 + "\nval2: " + val2);
+            
+        });
+
+        function fncalculate() {
+        $.ajax({
+            url: "@Url.Action("Calculate")", //"/Home/Add", // Controller and action
+            type: "POST",
+            data: { val1: $("#txtval1").val(), val2: $("#txtval2").val() },
+            datatype: "json",
+            success: function (response) {
+                // Display the result
+                console.log(response)
+                $("#a").html(response);
+                $("#addvalue").html(response.add);
+                $("#Subtractvalue").html(response.subtract);
+                $("#Multiplyvalue").html(response.multiply);
+                $("#Divisionvalue").html(response.divide);
+            },
+            error: function (req, status, error) {
+                // Handle errors
+                console.error(error);
+                $("#result").html("Error occurred: " + error);
+            }
+        });
+        }
+    </script> 
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>   
+    
+    <div id="a" style="font-size:20px; color:red"></div>
+
+
+    <table>
+        <tr>
+            <td> <input type="text" id="txtval1" /> <input type="text" id="txtval2" /> </td>
+            <td> <input type="button" value="calculate" onclick="fncalculate()"> </td>
+        </tr>
+
+        <tr>
+            <td>Add: </td>
+            <td id="addvalue"></td>
+        </tr>
+        <tr>
+            <td>Subtract: </td>
+            <td id="Subtractvalue"></td>
+        </tr>
+        <tr>
+            <td>Multiply: </td>
+            <td id="Multiplyvalue"></td>
+        </tr>
+        <tr>
+            <td>Division: </td>
+            <td id="Divisionvalue"></td>
+        </tr>
+    </table>
+</div>

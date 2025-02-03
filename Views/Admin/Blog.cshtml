@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewData["Title"] = "Blog";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {//call on page load
+        $.ajax({
+            url: "@Url.Action("BlogList")", //"/Home/Add", // Controller and action
+            type: "POST",
+
+            success: function (response) {
+                // Display the result
+                console.log(response)
+                // BindData(response) //bind with json
+               $("#tablebody").html(response)//bind with partial view
+                
+            },
+            error: function (req, status, error) {
+                // Handle errors
+                console.error(error);
+                $("#result").html("Error occurred: " + error);
+            }
+        });
+
+    });
+
+    //without partial view
+    // function BindData(data) {
+    //     const tablebody = $('#blog_table tbody');
+    //     tablebody.empty(); // Clear existing data
+    //     $.each(data, function (i, j) {
+    //         tablebody.append(`
+    //             <tr>
+    //                 <td> ${j.blogId} </td>
+    //                 <td> ${j.title} </td>
+    //                 <td> ${j.description} </td>
+    //                 <td> ${j.totalView} </td>
+    //                 <td> ${j.videoPath} </td>
+    //                 <td> ${new Date(j.createdDate).toLocaleDateString()} </td>
+    //                 <td> ${j.isActive === 1 ? "Yes" : "No"} </td>
+    //                 <td>  | Delete </td>
+    //             </tr>
+    //         `);
+    //         console.log( j.isActive)
+
+    //        // console.log(i)
+    //         //console.log(tablebody)
+    //     });
+
+    function fnDeleteData(id) {
+
+        let text;
+        if (confirm("Press a button!") == true) {
+            text = "You pressed OK!";
+        } else {
+            text = "You canceled!";
+        }
+        $.ajax({
+            url: "@Url.Action("BlogDelete")", // Adjust the action URL
+            type: "POST",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                "id": id,
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.isSuccess) {
+                    fnListData();
+                }
+                else {
+                    $("#error").show();
+                    $("#error").html(response.responceMsz);
+                    console.log(response);
+                }
+            },
+            error: function (req, status, error) {
+                console.error(error);
+                $("#result").html("Error occurred: " + error);
+            }
+        });
+    }
+
+    function fnListData() {
+        $.ajax({
+            url: "@Url.Action("BlogList")", // Controller and action for fetching the blog list
+            type: "POST",
+            success: function (response) {
+                $("#tablebody").html(response); // Update the table body with partial view content
+            },
+            error: function (req, status, error) {
+                console.error("Error fetching blog list:", error);
+            }
+        });
+    }
+
+
+
+
+</script>
+
+<h1>Blog</h1>
+
+<div><a href="~/Admin/BlogAdd"> Add Blog </a></div>
+ 
+<table class="table table-striped" id="blog_table">
+    <thead>
+        <tr>
+            <th>Blog ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Total Views</th>
+            <th>Video Path</th>
+            <th>Created Date</th>
+            <th> Active</th>
+            <th>Action</th>
+ 
+        </tr>
+    </thead>
+    <tbody id="tablebody">
+
+    </tbody>
+</table>
+
+
+

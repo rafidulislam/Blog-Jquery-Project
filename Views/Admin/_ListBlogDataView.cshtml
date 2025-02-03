@@ -1,0 +1,28 @@
+﻿@model List<BlogModel>
+@if (Model.Count > 0)
+{
+    @foreach(var j in Model)
+    {
+        <tr>
+            <td> @j.BlogId </td>
+            <td> @j.Title </td>
+            <td> @j.Description </td>
+            <td> @j.TotalView </td>
+            <td> @j.VideoPath </td>
+            <td> @j.CreatedDate </td>
+            <td> @j.IsActive </td>
+            <td>
+                <a href="~/admin/blogUpdate/@j.BlogId" class="btn btn-primary"> edit</a> @* <a asp-action="BlogUpdate" asp-route-id="@j.BlogId" class="btn btn-primary"> edit</a> *@
+                |<a href="~/admin/blogDetail/@j.BlogId" class="btn btn-primary"> details</a>
+                |<a href="javascript:void(0)" onclick="fnDeleteData(@j.BlogId)">Delete</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="7"> No data found </td>
+    </tr>
+    
+}

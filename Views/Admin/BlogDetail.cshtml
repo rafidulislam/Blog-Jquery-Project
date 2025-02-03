@@ -1,0 +1,115 @@
+﻿@model BlogModel
+
+@{
+    ViewData["Title"] = "Blog Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Adjust this to your layout path if necessary
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        fnDetailsData();
+    });
+
+    // function fnDetailsData() {
+    //     var id = $("#hdnBlogid").val();
+    //     $.ajax({
+    //         url: "@Url.Action("BlogDetailData","Admin")", // Controller and action for fetching the blog detail function
+    //         type: "POST",
+    //         contentType: 'application/x-www-form-urlencoded',
+    //         data: {"id":id},
+    //         success: function (response) {
+    //             $("#tdBlogId").html(response.blogid);
+    //             $("#tdTitle").html(response.title);
+    //             $("#tdDescription").html(response.description);
+    //             $("#tdCreatedDate").html(response.createdDate);
+    //             $("#tdIsActive").html(response.isActive);
+    //         },
+    //         error: function (req, status, error) {
+    //             console.error("Error fetching blog list:", error);
+    //         }
+    //     });
+    // }
+
+    function fnDetailsData() {
+        var id = $("#hdnBlogid").val();
+
+        if (!id) {
+            console.error("Blog ID is missing.");
+            return;
+        }
+
+        $.ajax({
+            url: "@Url.Action("BlogDetailData", "Admin")",
+            type: "POST",
+            contentType: 'application/x-www-form-urlencoded',
+            data: { "id": id },
+            success: function (response) {
+                if (response.success === false) {
+                    console.warn(response.message);
+                    return;
+                }
+                console.log(response)
+                $("#tdBlogId").html(response.blogId);  // Ensure correct casing
+                $("#tdTitle").html(response.title);
+                $("#tdDescription").html(response.description);
+                $("#tdCreatedDate").html(response.createdDate);
+                $("#tdIsActive").html(response.isActive ? "Yes" : "No");
+            },
+            error: function (req, status, error) {
+                console.error("Error fetching blog details:", error);
+            }
+        });
+    }
+</script>
+
+
+<h2>Blog Detail</h2>
+<input type="hidden" id="hdnBlogid" asp-for="BlogId" />
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <td>Blog Id</td>
+        <td id="tdBlogId"></td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td id="tdTitle"></td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td id="tdDescription"></td>
+    </tr>
+    <tr>
+        <td>CreatedDate</td>
+        <td id="tdCreatedDate"></td>
+    </tr>
+    <tr>
+        <td>IsActive</td>
+        <td id="tdIsActive"></td>
+    </tr>
+</table>
+
+@* <table class="table table-responsive table-striped">
+    <tr>
+        <td>Blog Id</td>
+        <td>@Model.BlogId</td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td>@Model.Title</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>@Model.Description</td>
+    </tr>
+    <tr>
+        <td>CreatedDate</td>
+        <td>@Model.CreatedDate</td>
+    </tr>
+    <tr>
+        <td>IsActive</td>
+        <td>@Model.IsActive</td>
+    </tr>
+</table> *@

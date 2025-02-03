@@ -1,0 +1,156 @@
+﻿@model BlogModel
+
+@{
+    ViewData["Title"] = "Update Blog";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Adjust this to your layout path if necessary
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function fnUpdateBlogData() {
+        console.log("fnUpdateBlogData called");
+        var id = $("#txtId").val();
+        var title = $("#txtTitle").val();
+        var description = $("#txtDescription").val();
+        var videopath = $("#txtVideoPath").val();
+
+        if (!validateData()) {
+            return false;
+        }
+
+        $.ajax({
+            url: "@Url.Action("BlogUpdate", "Admin")", // Adjust the action URL
+            type: "POST",
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                "blogId":id,
+                "title": title,
+                "description": description,
+                "videopath": videopath
+            },
+            success: function (response) {
+                //console.log(response);
+                if (response.isSuccess) {
+                    console.log(response, "inside response.isSuccess");
+
+                    window.location = "/admin/blog";
+                   // console.log(response.isSuccess);
+                }
+                else {
+                    $("#error").show();
+                    $("#error").html(response.responceMsz);
+                    console.log(response);
+                }
+            },
+            error: function (req, status, error) {
+                console.error(error);
+                $("#result").html("Error occurred: " + error);
+            }
+        });
+    }
+
+    function validateData() {
+        console.log("validateData running");
+        var result = true;
+
+        var title = $("#txtTitle").val();
+
+        if (title.trim().length > 0) {
+            $("#errorTitle").html("");
+        } else {
+            $("#errorTitle").html("Title is required from ajax");
+            result = false;
+        }
+        var description = $("#txtDescription").val();
+
+        if (description.trim().length > 0) {
+            $("#errorDescription").html("");
+        } else {
+            $("#errorDescription").html("Description is required from ajax");
+            result = false;
+        }
+        var videopath = $("#txtVideoPath").val();
+
+        if (videopath.trim().length > 0) {
+            $("#errorVideoPath").html("");
+        } else {
+            $("#errorVideoPath").html("VideoPath is required from ajax");
+            result = false;
+        }
+
+        return result;
+    }
+
+
+    function checkData(x) {
+        var id = x.id;
+
+        if (id == 'txtTitle') {
+            var title = $("#txtTitle").val();
+            console.log(title);
+            if (title.trim().length > 0) {
+                $("#errorTitle").html("");
+            } else {
+                $("#errorTitle").html("Title is required from ajax");
+            }
+        } else if (id == 'txtDescription') {
+            var description = $("#txtDescription").val();
+            console.log(description);
+            if (description.trim().length > 0) {
+                $("#errorDescription").html("");
+            } else {
+                $("#errorDescription").html("Description is required from ajax");
+            }
+        } else if (id == 'txtVideoPath') {
+            var videopath = $("#txtVideoPath").val();
+            console.log(videopath);
+            if (videopath.trim().length > 0) {
+                $("#errorVideoPath").html("");
+            } else {
+                $("#errorVideoPath").html("VideoPath is required from ajax");
+            }
+        }
+    }
+    function fnResetBlogData() {
+        $("#txtTitle").val('');
+        $("#txtDescription").val('');
+        $("#txtVideoPath").val('');
+    }
+
+</script>
+
+<div class="container mt-5">
+    <h2>Add Blog</h2>
+
+    <div class="alert alert-danger" role="alert" id="error" style="display:none"></div>
+ 
+    <div class="mb-3">
+        <input type="hidden" id="txtId" asp-for="BlogId" >
+    </div>
+    
+    <div class="mb-3">
+        <label for="txtTitle" class="form-label">Blog Title</label>
+        <input id="txtTitle" class="form-control" asp-for="Title" placeholder="Enter blog title" onchange="return checkData(this)">
+        <span id="errorTitle" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="txtDescription" class="form-label">Blog Description</label>
+        <textarea id="txtDescription" class="form-control" asp-for="Description" rows="4" placeholder="Enter blog description" onchange="return checkData(this)"></textarea>
+        <span id="errorDescription" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="txtVideoPath" class="form-label">Video Path</label>
+        <input id="txtVideoPath" class="form-control" asp-for="VideoPath" placeholder="Enter video path (optional)" onchange="return checkData(this) ">
+        <span id="errorVideoPath" class="text-danger"></span>
+    </div>
+    <button type="submit" asp-action="BlogUpdate" class="btn btn-primary" id="btnSaveBlog" onclick="fnUpdateBlogData()">Update</button>
+    <button type="submit" class="btn btn-primary" id="btnResetBlog" onclick="fnResetBlogData()">Reset</button>
+    <a href="~/admin/blog" class="btn btn-primary"> BlogList</a>
+   
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+}
